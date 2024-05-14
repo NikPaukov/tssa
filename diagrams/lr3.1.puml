@@ -1,0 +1,34 @@
+@startuml
+top to bottom direction
+
+actor User
+
+
+package "Frontend" #LightBlue {
+node "Main page"
+node "Search page"
+User -right-> "Main page": open
+"Main page" -> "Search page": open
+}
+package "Backend" #LightGreen {
+node "AuthenticationService"
+node "AuthorizationService"
+node "ArticleController"
+node "ArticleService"
+node "AuthorService"
+node "ArticleMapper"
+node "ArticleRepository"
+node "AuthorRepository"
+"Search page" -> "AuthenticationService":next(req, res): HttpResponse
+"AuthenticationService" -> "AuthorizationService":next(req: Request, res: Response): HttpResponse
+"AuthorizationService" --> "ArticleController":get(req, res): HttpResponse
+"ArticleController" -> "ArticleService":findArticlesByAuthor(authorId:Integer: List<Article>)
+"ArticleService" -> "ArticleMapper": entityToDto(article: Article): ArticleDto
+"ArticleService" -> "ArticleRepository":findArticlesByAuthor(author:Author): List<Article>
+"ArticleService" --> "AuthorService":getAuthorById(id: Integer): Author
+"AuthorService" -> "AuthorRepository":getAuthorById(id: Integer): Optional<Author>
+}
+database Database
+"AuthorRepository" -> Database: query
+"ArticleRepository" -> Database: query
+@enduml

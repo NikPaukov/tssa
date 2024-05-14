@@ -1,0 +1,42 @@
+@startuml
+top to bottom direction
+
+actor Publisher
+
+
+package "Frontend" #LightBlue {
+node "Main page"
+node "Publisher Account"
+node "New Article Page"
+Publisher -right-> "Main page": open
+"Main page" -> "Publisher Account": open
+"Publisher Account" -> "New Article Page": open
+}
+package "Backend" #LightGreen {
+node "AuthenticationService"
+node "AuthorizationService"
+node "ArticleController"
+node "ArticleMapper"
+node "ArticleService"
+node "ArticleRepository"
+node "AuthorRepository"
+node "UserService"
+node "UserRepository"
+node "AuthorService"
+"New Article Page" -> "AuthenticationService":next(req, res): HttpResponse
+"AuthenticationService" -> "AuthorizationService":next(req: Request, res: Response): HttpResponse
+"AuthorizationService" --> "ArticleController":get(req, res): HttpResponse
+"AuthorizationService" -> "UserService": getAuthorities(userId: Long): List<GrantAuthority>
+"UserService" -> "UserRepository": getAuthorities(userId: Long): List<GrantAuthority>
+"ArticleController" -> "ArticleService":createArticle(articleDto: ArticleDto)
+"ArticleService" --> "ArticleRepository":createArticle(article:Article): List<Article>
+"ArticleService" -> "ArticleMapper": dtoToEntity(articleDto: ArticleDto): Article
+"ArticleService" --> "AuthorService":getAuthorById(id: Integer): Author
+"AuthorService" -> "AuthorRepository":getAuthorById(id: Integer): Optional<Author>
+
+}
+database Database
+"UserRepository" -> Database: query
+"AuthorRepository" -> Database: query
+"ArticleRepository" -> Database: query
+@enduml

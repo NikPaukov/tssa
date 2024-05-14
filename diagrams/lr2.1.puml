@@ -1,0 +1,38 @@
+@startuml
+actor Publisher as a
+participant "User mail"
+participant "User Interface"
+participant "AuthenticationService"
+participant "AuthorizationService"
+participant "Notification Service"
+participant "ArticleService"
+participant "DB"
+
+a -> "User Interface": create new article
+ "User Interface" -> "AuthenticationService": verifying who user is
+"AuthenticationService" -> "AuthorizationService":  verifying that user has access
+"AuthorizationService" -> "ArticleService":  processing article
+
+
+"ArticleService" -> "DB":  saving article to "DB"
+"DB" -> "User Interface":  Showing draft article
+"DB" -> "ArticleService": publishing article after approval
+"ArticleService" -> "Notification Service": notifying author
+"ArticleService" -> "Notification Service": notifying subctibers
+"Notification Service" -> "User mail": notifying
+"Notification Service" -> "DB": saving notification to personal account
+"User mail" -> a
+
+|||
+|||
+|||
+
+
+a -> "User Interface": opening existing article
+ "User Interface" -> "ArticleService":  updating article statistics
+"ArticleService" -> "DB":  fetching article from "DB"
+"DB" -> "ArticleService": returning article
+"ArticleService" -> "User Interface": returning article
+"User Interface" -> a: showing article to user
+
+@enduml

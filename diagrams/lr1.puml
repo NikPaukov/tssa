@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+actor Guest
+actor User
+actor Publisher
+actor Administrator
+User    <|-down-Guest
+Publisher    <|-down- User
+Administrator    <|-down- Publisher
+top to bottom direction
+Guest -down-> (Login)
+(Login) <- (Registration) : <<includes>>
+Guest -down-> (Reading articles)
+Guest -left-> (Searching articles)
+(Searching articles) <-- (Searching by author) :<<includes>>
+(Searching articles) <-- (Searching by topic) :<<includes>>
+(Searching articles) <-- (Searching by keywords) :<<includes>>
+
+User -right-> (Rating articles)
+User -right-> (Commenting articles)
+User -right-> (Subscribing)
+(Subscribing) <-- (Subscribing to topic) :<<includes>>
+(Subscribing) <-- (Subscribing to author) :<<includes>>
+(Subscribing) <-- (Subscribing to keyword) :<<includes>>
+
+Publisher -left-> (Writing draft article)
+Publisher -right-> (Editing own article)
+Publisher -left-> (Checking article statistic)
+(Writing draft article) <-left- (Publishing article) :<<extends>
+
+Administrator -right-> (Deleting articles)
+Administrator -right-> (Approving articles)
+Administrator -right-> (Blocking articles)
+Administrator -right-> (Banning publishers)
+@enduml
