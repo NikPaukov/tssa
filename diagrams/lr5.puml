@@ -1,0 +1,55 @@
+@startuml
+hide empty description
+
+[*] --> ArticleLifecycle: Publisher creates a draft article
+
+state ArticleLifecycle {
+  [*] --> NewDraft : NewDraft Article
+  NewDraft --> Reviewing : Article sent to administrator
+}
+state ArticleForbidden {
+[*] --> forbidArticle
+forbidArticle: notify author about review results
+}
+state NewDraft {
+  [*] --> DraftArticleCreated : Create NewDraft Article
+DraftArticleCreated: Created unpublished article
+}
+state Reviewing {
+  [*] --> ArticleReviewed: Review Article
+  ArticleReviewed: article reviewed by administrator
+}
+
+state ArticleApproved {
+[*] --> InformAuthor
+InformAuthor: notify author about review results
+}
+
+
+
+
+state ArticlePublished {
+[*] --> PublishArticle
+PublishArticle: article is available for  public
+}
+DraftArticleCreated --> ArticleForbidden : article is invalid
+Reviewing --> ArticleForbidden: Administrator censores article
+Reviewing -down-> ArticleApproved : Administrator approved article
+
+ArticleApproved --> ArticlePublished
+
+state ArticleUpdated {
+[*] --> ReReviewArticle
+ReReviewArticle: article is sent to review again
+}
+ArticleForbidden -up-> ArticleUpdated : Author updates article
+ArticleUpdated --> ArticleLifecycle : article is sent to review again
+
+state ArticleDeleted {
+[*] --> DeleteArticle
+DeleteArticle: Article is deleted
+}
+ArticleApproved --> ArticleDeleted: author deletes article
+ArticlePublished --> ArticleDeleted: author deletes article
+ArticleForbidden --> ArticleDeleted: author deletes article
+@enduml

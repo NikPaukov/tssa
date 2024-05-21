@@ -1,0 +1,14 @@
+@startuml
+package news-frontend{
+package assets
+package src{
+package styles
+package components
+package services{
+package internal
+package external
+}
+package pages
+}
+}
+@enduml

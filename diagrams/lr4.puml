@@ -1,0 +1,25 @@
+@startuml
+package com{
+package example{
+package news{
+
+package services{
+package internal
+package external
+}
+package web{
+package controllers{
+package public
+package private
+}
+package security
+package mappers
+}
+package data{
+package entities
+package repositories
+}
+}
+}
+}
+@enduml

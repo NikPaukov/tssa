@@ -1,0 +1,116 @@
+@startuml
+
+top to bottom direction
+class ArticleDTO
+class ArticleMapper{
++toDto(entity:Article): ArticleDTO
++toEntity(entity:ArticleDTO): Article
+}
+
+class SubscriptionDTO
+class SubscriptionMapper{
++toDto(entity:Subscription): SubscriptionDTO
++toEntity(entity:SubscriptionDTO): Subscription
+}
+class UserDTO
+class UserMapper{
++toDto(entity:User): UserDTO
++toEntity(entity:UserDTO): User
+}
+class ArticleController{
+-articleService: ArticleService
+-articleMapper: ArticleMapper
++getAll(): List<Article>
++getById(id: long): Article
++getByTopic(topic: string): List<Article>
++getByAuthor(authorId: long): List<Article>
++publish(id: long)
++createDraft(articleDto: ArticleDTO)
++unpublish(id: long)
++delete(id: long)
+}
+
+class ArticleService {
+-userService: UserService
+-notificationService: NotificationService
+-articleRepository: ArticleRepository
+-addViewToArticle(article: Article)
++getAll(): List<Article>
++getById(id: long): Article
++getByTopic(topic: string): List<Article>
++getByAuthor(authorId: long): List<Article>
++publish(id: long)
++createDraft(article: Article)
++unpublish(id: long)
++delete(id: long)
+}
+
+ArticleController --> ArticleService
+interface ArticleRepository
+ArticleController -> ArticleMapper
+ArticleService --> ArticleRepository
+class NotificationService {
+    -notifyByEmail()
+    -notifyByApp()
+    +notifySubcribers()
+    +notifyAuthor()
+}
+ArticleService -right-> NotificationService
+class SubscriptionController{
+-subscriptionService: SubscriptionService
+-subscriptionMapper: SubscriptionMapper
++subscribeToAuthor(authorId: long): SubscriptionDTO
++subscribeToTopic(topic: string): SubscriptionDTO
++unsubscribe(subscriptionId: long)
++getSubscriptions(): List<SubscriptionDTO>
+}
+
+class SubscriptionService{
+-notificationService: NotificationService
+-subscriptionRepository: SubscriptionRepository
++subscribeToAuthor(authorId: long): Subscription
++subscribeToTopic(topic: string): Subscription
++unsubscribe(subscriptionId: long)
++getSubscriptions(): List<Subscription>
+}
+SubscriptionService --> NotificationService
+interface SubscriptionRepository
+SubscriptionController --> SubscriptionService
+SubscriptionController -> SubscriptionMapper
+SubscriptionService --> SubscriptionRepository
+
+
+
+class UserController{
+-userService: UserService
+-userMapper: UserMapper
++createUser(entity:UserDTO)): UserDTO
++getSelf()
++getById(id: long)
++deleteUser(id: long)
++banUser(id: long)
+}
+
+class UserService{
+-userRepository: UserRepository
++createUser(entity:User)): User
++getById(id: long)
++deleteUser(id: long)
++banUser(id: long)
+}
+UserController --> UserService
+interface UserRepository
+UserService --> UserRepository
+UserController -> UserMapper
+ArticleService --> UserService
+class AuthorizationService{
+    -userService: UserService
+    -secret: String
+    +login(username: String, password: String): JWTPair
+    +verifyJWT(jwtPair: JWTPair): DecodedJWT
+    +generateJWT(username: String): JWTPair
+}
+AuthorizationService --> UserService
+
+
+@enduml
